@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&display=swap" rel="stylesheet">
+  <title>SamJ Maths</title>
+  <style>
+    body {
+      font-family: "DM Sans", sans-serif;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      background-color: #f0f0f0;
+    }
+    .container {
+      text-align: center;
+    }
+    #inputBox {
+      width: 300px;
+      padding: 10px;
+      font-size: 16px;
+    }
+    #result {
+      margin-top: 10px;
+      font-weight: bold;
+    }
+
+
+
+
+    .collapsible {
+      background-color: #2179de;
+      color: white;
+      cursor: pointer;
+      padding: 18px;
+      width: 45%;
+      border: none;
+      text-align: left;
+      outline: none;
+      font-size: 15px;
+      border-radius: 30px;
+    }
+
+    .active, .collapsible:hover {
+      background-color: #2e3c71;
+    }
+
+    .collapsible:after {
+      content: '\002B';
+      color: white;
+      font-weight: bold;
+      float: right;
+      margin-left: 5px;
+    }
+
+    .active:after {
+      content: "\2212";
+    }
+
+    .content {
+      padding: 0 18px;
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.2s ease-out;
+      background-color: #f1f1f1;
+    }
+  </style>
+  <link rel="shortcut icon" href="https://auth.sparxmaths.uk/oauth2/static/favicon.ico">
+</head>
+<body>
+  <div class="container">
+    <h1>SamJ Maths</h1>
+    <h4><i>"Fuck SparxMaths" ~ Obama</i></h4>
+    <input type="text" id="inputBox" placeholder="Enter your math problem">
+    <button onclick="solveMathProblem()">Solve</button>
+    <div id="result"></div>
+    <br><br>
+    <button class="collapsible">How to use this on SparxMaths</button>
+    <div class="content">
+      <p>Drag The Link Below To The Bookmark Bar Then Click It When You're On SparxMaths</p>
+      <p>If you're on a phone then drag the link to the main section after you press the Bookmark button (2nd from the left) and press on that when you want to use it</p>
+      <a href="javascript:(function() {    var css = ':root { --user-select-accessibility-setting: default !important; }';    var style = document.createElement('style');    style.appendChild(document.createTextNode(css));    document.head.appendChild(style);        var textElements = document.querySelectorAll('span._TextElement_ygl3l_73');    var combinedText = '';    textElements.forEach(function(element) {        var textContent = element.innerText;        combinedText += 'Text Content: ' + textContent + '\n\n';    });    var userInput = prompt('Describe the Image:');    if (userInput !== null) {        combinedText += 'Image Description:\n' + userInput;        console.log(combinedText);                var button = document.createElement('button');        button.innerText = 'Show Solution';        button.style.position = 'fixed';        button.style.bottom = '20px';        button.style.right = '20px';        button.style.zIndex = '9999';        button.onclick = function() {            var url = 'https:/maths.samj.app/?input=%27 + encodeURIComponent(combinedText);            window.open(url, %27_blank%27);        };        document.body.appendChild(button);    }})();">SamJ Maths</a>
+      <p>Describe the image attached to the question in the box and then click "Show Solution" to start solving. The Show Solution Button is glitchy on phones but just click below the Solution button to continue.</p>
+    </div>
+  </div>
+
+  <script>
+    window.onload = function() {
+      const urlParams = new URLSearchParams(window.location.search);
+      const userInputParam = urlParams.get('input');
+      if (userInputParam) {
+        document.getElementById("inputBox").value = userInputParam;
+        solveMathProblem();
+      }
+    };
+
+    function solveMathProblem() {
+      var userInput = document.getElementById("inputBox").value;
+      var button = document.querySelector("button");
+      button.innerText = "Solving...";
+
+      var data = {
+        "messages": [
+          {"role": "system", "content": "Reply to Math Problems with simple answers that give only the information needed. Make sure to add a bit that says 'Answer: ANSWER HERE'"},
+          {"role": "user", "content": userInput}
+        ],
+        "model": "claude-3-opus"
+      };
+
+      fetch("https://api.discord.rocks/ask", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(data)
+      })
+      .then(response => response.json())
+      .then(data => {
+        var resultElement = document.getElementById("result");
+        resultElement.innerText = data.response;
+        button.innerText = "Solve";
+      })
+      .catch(error => {
+        console.error('Error:', error);
+        button.innerText = "Solve";
+      });
+    }
+  </script>
+  <script>
+  var coll = document.getElementsByClassName("collapsible");
+  var i;
+
+  for (i = 0; i < coll.length; i++) {
+    coll[i].addEventListener("click", function() {
+      this.classList.toggle("active");
+      var content = this.nextElementSibling;
+      if (content.style.maxHeight){
+        content.style.maxHeight = null;
+      } else {
+        content.style.maxHeight = content.scrollHeight + "px";
+      } 
+    });
+  }
+  </script>
+</body>
+</html>
